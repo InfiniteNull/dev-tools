@@ -1,9 +1,8 @@
 /**
- * app.js - Master Orchestrator for Dev & Data Portfolio Suite
- * Mengelola kartu 22 tools, pencarian, filter kategori, navigasi modal workspace, tema dark/light, dan i18n switcher.
+ * app.js - Master Orchestrator for Dev & Data Engineering Suite (29 Tools)
+ * Mengelola kartu 29 tools, pencarian live, filter kategori, navigasi modal workspace (Live Demo, Source Code, Docs), dan i18n switcher.
  */
 
-// Master Tools Registry Definition (22 All-in-One IT & Engineering Tools with ID & EN support)
 const TOOLS_REGISTRY = [
   // ==========================================
   // KATEGORI 1: JARINGAN & SERVER (network)
@@ -799,10 +798,11 @@ const TOOLS_REGISTRY = [
   }
 ];
 
-// App State Management
+// State Management
 let currentCategory = 'all';
 let currentSearch = '';
 let activeTool = null;
+window.currentLang = 'id';
 
 // Toast Notification Function
 window.showToast = function(message, type = 'info') {
@@ -810,7 +810,7 @@ window.showToast = function(message, type = 'info') {
   if (!container) return;
 
   const toast = document.createElement('div');
-  let bgClass = "bg-slate-900 text-white dark:bg-white dark:text-slate-900";
+  let bgClass = "bg-slate-900 text-white";
   let iconName = "info";
 
   if (type === 'success') {
@@ -821,7 +821,7 @@ window.showToast = function(message, type = 'info') {
     iconName = "alert-circle";
   }
 
-  toast.className = `flex items-center gap-2 px-4 py-2.5 rounded-lg shadow-lg text-xs font-semibold ${bgClass} transition-all duration-300 transform translate-y-2 opacity-0`;
+  toast.className = `flex items-center gap-2 px-4 py-2.5 rounded-lg shadow-lg text-xs font-semibold ${bgClass} transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto`;
   toast.innerHTML = `
     <i data-lucide="${iconName}" class="w-4 h-4"></i>
     <span>${message}</span>
@@ -841,7 +841,7 @@ window.showToast = function(message, type = 'info') {
 };
 
 // ==========================================
-// RENDER TOOLS GRID
+// RENDER TOOLS GRID (29 Tools)
 // ==========================================
 window.renderToolsGrid = function() {
   const toolsGrid = document.getElementById('toolsGrid');
@@ -877,35 +877,35 @@ window.renderToolsGrid = function() {
     const openLabel = lang === 'en' ? 'Open Workspace' : 'Buka Workspace';
 
     const card = document.createElement('div');
-    card.className = "tool-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col justify-between cursor-pointer group";
+    card.className = "tool-card bg-slate-900 hover:bg-slate-850 rounded-xl border border-slate-800 hover:border-slate-700 p-5 flex flex-col justify-between cursor-pointer group transition duration-200 shadow-sm";
     card.dataset.toolId = tool.id;
 
     card.innerHTML = `
       <div class="space-y-3.5">
         <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
+          <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700/60">
             <i data-lucide="${tool.icon}" class="w-4 h-4"></i>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-medium border bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700">
+          <span class="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-medium border bg-slate-800/80 text-slate-300 border-slate-700">
             ${tool.techBadge}
           </span>
         </div>
 
         <div>
-          <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+          <h3 class="font-bold text-white text-sm sm:text-base group-hover:text-purple-400 transition-colors">
             ${title}
           </h3>
-          <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+          <p class="mt-1.5 text-xs text-slate-400 leading-relaxed line-clamp-2">
             ${desc}
           </p>
         </div>
       </div>
 
-      <div class="pt-3.5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-        <span class="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white flex items-center gap-1.5 transition-colors">
+      <div class="pt-3.5 mt-4 border-t border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-[11px] font-mono font-medium text-slate-400 group-hover:text-white flex items-center gap-1.5 transition-colors">
           ${openLabel} <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
         </span>
-        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-wider">MODULAR</span>
+        <span class="text-[10px] font-mono text-purple-400 uppercase tracking-wider">LIVE DEMO</span>
       </div>
     `;
 
@@ -921,8 +921,6 @@ window.renderToolsGrid = function() {
 // ==========================================
 // MODAL WORKSPACE MANAGEMENT
 // ==========================================
-window.activeTool = null;
-
 function openToolModal(tool) {
   activeTool = tool;
   window.activeTool = tool;
@@ -933,11 +931,10 @@ function openToolModal(tool) {
   const modalTechBadge = document.getElementById('modalTechBadge');
   const modalIcon = document.getElementById('modalIcon');
   
-  const modalDemoContent = document.getElementById('modalDemoContent') || document.getElementById('modalTabDemoContent');
-  const modalDocsContent = document.getElementById('modalDocsContent') || document.getElementById('modalDocsBody');
+  const modalTabDemoContent = document.getElementById('modalTabDemoContent');
+  const modalDocsBody = document.getElementById('modalDocsBody');
 
   const title = (lang === 'en' && tool.title_en) ? tool.title_en : tool.title;
-  const desc = (lang === 'en' && tool.desc_en) ? tool.desc_en : tool.description;
   const docs = (lang === 'en' && tool.docs_en) ? tool.docs_en : tool.docs;
 
   if (modalTitle) modalTitle.textContent = title;
@@ -955,11 +952,12 @@ function openToolModal(tool) {
   }
 
   // Render Tool interactive content
-  if (modalDemoContent) {
+  if (modalTabDemoContent) {
+    modalTabDemoContent.innerHTML = '';
     if (typeof window[tool.renderFn] === 'function') {
-      window[tool.renderFn](modalDemoContent);
+      window[tool.renderFn](modalTabDemoContent);
     } else {
-      modalDemoContent.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">Modul '${title}' siap dijalankan.</div>`;
+      modalTabDemoContent.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">Modul '${title}' siap dijalankan.</div>`;
     }
   }
 
@@ -967,8 +965,8 @@ function openToolModal(tool) {
   loadCodeSnippet(tool.id);
 
   // Load Architecture documentation
-  if (modalDocsContent) {
-    modalDocsContent.innerHTML = docs || `<div class="p-8 text-center text-xs text-slate-400">Dokumentasi teknis lengkap tersedia pada file README.md repository.</div>`;
+  if (modalDocsBody) {
+    modalDocsBody.innerHTML = docs || `<div class="p-8 text-center text-xs text-slate-400">Dokumentasi teknis lengkap tersedia pada file README.md repository.</div>`;
   }
 
   if (window.lucide) {
@@ -979,7 +977,7 @@ window.openToolModal = openToolModal;
 
 function closeToolModal() {
   const toolModal = document.getElementById('toolModal');
-  const modalDemoContent = document.getElementById('modalDemoContent') || document.getElementById('modalTabDemoContent');
+  const modalTabDemoContent = document.getElementById('modalTabDemoContent');
 
   if (toolModal) {
     toolModal.classList.add('hidden');
@@ -988,435 +986,123 @@ function closeToolModal() {
   document.body.style.overflow = '';
   activeTool = null;
   window.activeTool = null;
-  if (modalDemoContent) modalDemoContent.innerHTML = '';
+  if (modalTabDemoContent) modalTabDemoContent.innerHTML = '';
 }
+window.closeToolModal = closeToolModal;
 
 function switchModalTab(tab) {
   const tabBtnDemo = document.getElementById('tabBtnDemo');
   const tabBtnCode = document.getElementById('tabBtnCode');
   const tabBtnDocs = document.getElementById('tabBtnDocs');
 
-  const modalDemoContent = document.getElementById('modalDemoContent') || document.getElementById('modalTabDemoContent');
-  const modalCodeContent = document.getElementById('modalCodeContent') || document.getElementById('modalTabCodeContent');
-  const modalDocsContent = document.getElementById('modalDocsContent') || document.getElementById('modalDocsBody') || document.getElementById('modalTabDocsContent');
+  const modalTabDemoContent = document.getElementById('modalTabDemoContent');
+  const modalTabCodeContent = document.getElementById('modalTabCodeContent');
+  const modalDocsBody = document.getElementById('modalDocsBody');
 
-  // Reset tab button styles
-  [tabBtnDemo, tabBtnCode, tabBtnDocs].forEach(btn => {
-    if (!btn) return;
-    btn.className = "modal-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition flex items-center gap-2";
+  const activeClasses = ['bg-purple-600', 'text-white'];
+  const inactiveClasses = ['bg-slate-800', 'text-slate-400'];
+
+  [tabBtnDemo, tabBtnCode, tabBtnDocs].forEach(b => {
+    if (b) {
+      b.classList.remove(...activeClasses);
+      b.classList.add(...inactiveClasses);
+    }
   });
 
-  // Hide all contents
-  if (modalDemoContent) modalDemoContent.classList.add('hidden');
-  if (modalCodeContent) modalCodeContent.classList.add('hidden');
-  if (modalDocsContent) modalDocsContent.classList.add('hidden');
-
-  const activeClass = "modal-tab-btn active px-4 py-2.5 text-xs font-semibold border-b-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-white transition flex items-center gap-2";
+  if (modalTabDemoContent) modalTabDemoContent.classList.add('hidden');
+  if (modalTabCodeContent) modalTabCodeContent.classList.add('hidden');
+  if (modalDocsBody) modalDocsBody.classList.add('hidden');
 
   if (tab === 'demo') {
-    if (tabBtnDemo) tabBtnDemo.className = activeClass;
-    if (modalDemoContent) modalDemoContent.classList.remove('hidden');
+    if (tabBtnDemo) {
+      tabBtnDemo.classList.remove(...inactiveClasses);
+      tabBtnDemo.classList.add(...activeClasses);
+    }
+    if (modalTabDemoContent) modalTabDemoContent.classList.remove('hidden');
   } else if (tab === 'code') {
-    if (tabBtnCode) tabBtnCode.className = activeClass;
-    if (modalCodeContent) modalCodeContent.classList.remove('hidden');
+    if (tabBtnCode) {
+      tabBtnCode.classList.remove(...inactiveClasses);
+      tabBtnCode.classList.add(...activeClasses);
+    }
+    if (modalTabCodeContent) modalTabCodeContent.classList.remove('hidden');
   } else if (tab === 'docs') {
-    if (tabBtnDocs) tabBtnDocs.className = activeClass;
-    if (modalDocsContent) modalDocsContent.classList.remove('hidden');
+    if (tabBtnDocs) {
+      tabBtnDocs.classList.remove(...inactiveClasses);
+      tabBtnDocs.classList.add(...activeClasses);
+    }
+    if (modalDocsBody) modalDocsBody.classList.remove('hidden');
   }
 
-  if (window.lucide) {
-    lucide.createIcons();
-  }
-}
-
-function loadCodeSnippet(toolId) {
-  const modalCodeLang = document.getElementById('modalCodeLang');
-  const modalCodeSnippet = document.getElementById('modalCodeSnippet');
-
-  if (!window.TOOL_CODE_SNIPPETS || !window.TOOL_CODE_SNIPPETS[toolId]) {
-    if (modalCodeLang) modalCodeLang.textContent = "Script / Module";
-    if (modalCodeSnippet) modalCodeSnippet.textContent = "// Source code sedang dimuat atau tersedia pada repository...";
-    return;
-  }
-
-  const snippet = window.TOOL_CODE_SNIPPETS[toolId];
-  if (modalCodeLang) modalCodeLang.textContent = (snippet.language || "JavaScript") + " • " + (snippet.path || snippet.filename || "module.js");
-  if (modalCodeSnippet) modalCodeSnippet.textContent = snippet.code;
-}
-
-// ==========================================
-// TECHNICAL INTERVIEW GUIDE MODAL
-// ==========================================
-function openInterviewGuide() {
-  const modal = document.getElementById('interviewModal');
-  const content = document.getElementById('interviewModalContent');
-  if (!modal || !content) return;
-
-  const isEn = window.currentLang === 'en';
-
-  content.innerHTML = isEn ? `
-    <div class="space-y-6">
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-          1. SIMRS Core Enterprise Architecture (Laravel 11 & Clean Architecture)
-        </h4>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-          Architected based on Indonesian Ministry of Health standards (<strong>Permenkes No. 24 / 2022</strong>) and <strong>BPJS V-Claim 2.0 Bridging</strong> specifications:
-        </p>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>SatuSehat FHIR R4:</strong> Generates valid interoperability bundles containing <code>Encounter</code>, <code>Condition</code>, <code>MedicationRequest</code>, and <code>Observation</code> resources.</li>
-          <li><strong>SOAP Medical Records:</strong> ICD-10 diagnosis selector (40+ live records) with automatic BMI and Triage categorizations.</li>
-          <li><strong>Hospital Operational Indicators:</strong> Full implementation of Barber-Johnson formulas (BOR, ALOS, TOI, BTO) with real-time recalculation.</li>
-          <li><strong>Billing Ledger:</strong> Real-time cross-module synchronization aggregating administrative tariffs, doctor consultation fees, pharmacy prescriptions, and lab orders with official receipt generation.</li>
-        </ul>
-      </div>
-
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-          2. Dev & Data Engineering Suite (29 Interactive Tools)
-        </h4>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-          Engineered for systems administration, networking, security assessments, and statistical data cleaning:
-        </p>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>Networking:</strong> 32-bit bitwise IPv4 subnetting & VLSM calculations adhering to RFC 791/4632.</li>
-          <li><strong>Data Cleaning & QC:</strong> Statistical outlier detection using $Q1 - 1.5 \times \text{IQR}$, Z-Score, Min-Max Normalization, and deterministic regex formula parsing.</li>
-          <li><strong>System Security & Cryptography:</strong> Password entropy analysis ($E = L \times \log_2(N)$), SHA-256/MD5 hashing, JWT base64url decoding, and security headers audit.</li>
-        </ul>
-      </div>
-
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          3. Real-world IT Support & Research Track Record
-        </h4>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>Nginx Media Server Research:</strong> Virtual Machine deployment benchmarking RTMP, HLS, RTSP, and HTTP protocols, firewall hardening, and VAPT assessment.</li>
-          <li><strong>Banking PC Deployment (Bank Sinarmas):</strong> Full hardware setup, secure data profile migrations, domain onboarding, and peripheral configuration for banking operations.</li>
-        </ul>
-      </div>
-    </div>
-  ` : `
-    <div class="space-y-6">
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-          1. Arsitektur SIMRS Core Enterprise (Laravel 11 & Standar Kemenkes RI)
-        </h4>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-          Dirancang berdasarkan regulasi <strong>Permenkes No. 24 Tahun 2022</strong> dan integrasi <strong>BPJS V-Claim 2.0</strong>:
-        </p>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>SatuSehat FHIR R4:</strong> Generator bundle interoperabilitas resmi Kemenkes (resource <code>Encounter</code>, <code>Condition</code>, <code>MedicationRequest</code>, dan <code>Observation</code>).</li>
-          <li><strong>RME SOAP & ICD-10:</strong> Pencarian live 40+ kode ICD-10 klinis, kalkulasi otomatis BMI, dan penentuan prioritas triage IGD.</li>
-          <li><strong>Indikator Barber-Johnson:</strong> Formula matematis BOR, ALOS, TOI, BTO untuk evaluasi utilisasi tempat tidur rumah sakit.</li>
-          <li><strong>Billing Ledger & Kwitansi:</strong> Rekonsiliasi kasir lintas modul (admisi, tindakan, farmasi, lab) dengan modal cetak kwitansi resmi.</li>
-        </ul>
-      </div>
-
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-          2. Dev & Data Engineering Suite (29 Interactive Tools)
-        </h4>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-          Suite perkakas mandiri untuk administrasi sistem, jaringan, audit keamanan, dan analisis data:
-        </p>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>Jaringan & Server:</strong> Kalkulator subnetting IPv4 bitwise 32-bit, VLSM generator, estimasi throughput jaringan, dan generator rules firewall (Linux UFW, iptables, Mikrotik).</li>
-          <li><strong>Data Cleaner & QC:</strong> Deteksi pencilan statistik IQR ($Q1 - 1.5 \times \text{IQR}$), Z-Score, normalisasi Min-Max, dan spreadsheet formula parser.</li>
-          <li><strong>Keamanan Sistem & VAPT:</strong> Analisis entropi password Shannon, kalkulator hash SHA-256/MD5, debugger JWT base64url, dan audit security headers HTTP.</li>
-        </ul>
-      </div>
-
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1.5 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          3. Pengalaman Lapangan IT Support & Riset Infrastruktur
-        </h4>
-        <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <li><strong>IT Researcher (Adzkia Kedinasan):</strong> Perancangan Nginx Media Server Linux VM, pengujian komparatif 4 protokol streaming (RTMP, HLS, RTSP, HTTP), dan pengujian VAPT.</li>
-          <li><strong>IT Support Deployment (Bank Sinarmas):</strong> Perakitan hardware desktop, migrasi data profil user, instalasi OS, dan konfigurasi printer slip/scanner hingga terhubung ke domain internal bank.</li>
-        </ul>
-      </div>
-    </div>
-  `;
-
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.style.overflow = 'hidden';
   if (window.lucide) lucide.createIcons();
 }
+window.switchModalTab = switchModalTab;
 
-function closeInterviewGuide() {
-  const modal = document.getElementById('interviewModal');
-  if (modal) {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = '';
+function loadCodeSnippet(toolId) {
+  const modalCodeFilename = document.getElementById('modalCodeFilename');
+  const modalCodeSnippet = document.getElementById('modalCodeSnippet');
+  if (!modalCodeSnippet) return;
+
+  let filename = `${toolId}.js`;
+  let code = `// Source code for ${toolId}`;
+
+  if (typeof window.CODE_SNIPPETS_DB === 'object' && window.CODE_SNIPPETS_DB[toolId]) {
+    const entry = window.CODE_SNIPPETS_DB[toolId];
+    filename = entry.filename || filename;
+    code = entry.code || code;
   }
+
+  if (modalCodeFilename) modalCodeFilename.textContent = filename;
+  modalCodeSnippet.textContent = code;
 }
 
-// ==========================================
-// THEME SWITCHER (DARK / LIGHT)
-// ==========================================
-function initTheme() {
-  const themeIconSun = document.getElementById('themeIconSun');
-  const themeIconMoon = document.getElementById('themeIconMoon');
-  const savedTheme = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    document.documentElement.classList.add('dark');
-    if (themeIconSun) themeIconSun.classList.remove('hidden');
-    if (themeIconMoon) themeIconMoon.classList.add('hidden');
-  } else {
-    document.documentElement.classList.remove('dark');
-    if (themeIconSun) themeIconSun.classList.add('hidden');
-    if (themeIconMoon) themeIconMoon.classList.remove('hidden');
-  }
-}
-
-function toggleTheme() {
-  const themeIconSun = document.getElementById('themeIconSun');
-  const themeIconMoon = document.getElementById('themeIconMoon');
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-  if (isDark) {
-    if (themeIconSun) themeIconSun.classList.remove('hidden');
-    if (themeIconMoon) themeIconMoon.classList.add('hidden');
-  } else {
-    if (themeIconSun) themeIconSun.classList.add('hidden');
-    if (themeIconMoon) themeIconMoon.classList.remove('hidden');
-  }
-}
-
-
-// ==========================================
-// INTERACTIVE TERMINAL LOGIC
-// ==========================================
-window.runTerminalCmd = function(cmd) {
-  const terminalInput = document.getElementById('terminalInput');
-  if (terminalInput) {
-    terminalInput.value = cmd;
-    window.submitTerminal();
-  }
+// Copy Code Button Logic
+window.copyModalCode = function() {
+  const modalCodeSnippet = document.getElementById('modalCodeSnippet');
+  if (!modalCodeSnippet) return;
+  navigator.clipboard.writeText(modalCodeSnippet.textContent).then(() => {
+    showToast(window.currentLang === 'en' ? "Source code copied to clipboard!" : "Source code berhasil disalin ke clipboard!", "success");
+  }).catch(() => {
+    showToast("Gagal menyalin source code", "error");
+  });
 };
 
-window.submitTerminal = function() {
-  const inputEl = document.getElementById('terminalInput');
-  const outputEl = document.getElementById('terminalOutput');
-  if (!inputEl || !outputEl) return;
-
-  const rawCmd = inputEl.value.trim();
-  if (!rawCmd) return;
-  const cmd = rawCmd.toLowerCase();
-  inputEl.value = '';
-
-  if (cmd === 'clear' || cmd === 'cls') {
-    outputEl.innerHTML = '';
-    return;
-  }
-
-  let responseHtml = '';
-
-  if (cmd === 'help') {
-    responseHtml = `
-      <div class="text-slate-300 pl-3 border-l-2 border-slate-600 text-[10px] sm:text-xs space-y-1">
-        <div><strong>Available Commands:</strong></div>
-        <div>• <span class="text-emerald-400">whoami</span>: Ringkasan profil pengembang</div>
-        <div>• <span class="text-emerald-400">stack</span>: Tech stack backend, frontend, & sistem</div>
-        <div>• <span class="text-emerald-400">projects</span>: Daftar sistem produksi utama</div>
-        <div>• <span class="text-emerald-400">simrs</span>: Buka aplikasi SIMRS Core</div>
-        <div>• <span class="text-emerald-400">devtools</span>: Buka workspace 29 Web Tools</div>
-        <div>• <span class="text-emerald-400">contact</span>: Informasi kontak & GitHub</div>
-        <div>• <span class="text-emerald-400">clear</span>: Bersihkan layar terminal</div>
-      </div>
-    `;
-  } else if (cmd === 'whoami') {
-    responseHtml = `
-      <div class="text-slate-300 pl-3 border-l-2 border-emerald-500/50">
-        <strong>Rizki Ananda, S.Kom</strong> (@InfiniteNull)<br>
-        <span class="text-slate-400 text-[10px]">S1 Informatika • Universitas Potensi Utama</span><br>
-        <span class="text-slate-400 text-[10px]">Track Record: IT Researcher (Adzkia Kedinasan), IT Support Deployment (Bank Sinarmas)</span>
-      </div>
-    `;
-  } else if (cmd === 'stack') {
-    responseHtml = `
-      <div class="text-sky-300 pl-3 border-l-2 border-sky-500/50 text-[10px] sm:text-xs">
-        {<br>
-        &nbsp;&nbsp;"backend": ["Laravel 11", "PHP 8.2", "Python", "FastAPI"],<br>
-        &nbsp;&nbsp;"frontend": ["JavaScript ES6+", "TailwindCSS", "HTML5"],<br>
-        &nbsp;&nbsp;"systems": ["Linux Virtual Machine", "Nginx Media Server", "Mikrotik RouterOS", "SQLite/MySQL"],<br>
-        &nbsp;&nbsp;"security": ["VAPT Assessment", "OWASP Standards", "Burp Suite", "OSINT"]<br>
-        }
-      </div>
-    `;
-  } else if (cmd === 'projects') {
-    responseHtml = `
-      <div class="text-slate-300 pl-3 border-l-2 border-purple-500/50 text-[10px] sm:text-xs space-y-1.5">
-        <div>1. <strong class="text-sky-400">SIMRS Core Enterprise</strong>: Hospital MIS (Permenkes 24/2022, BPJS V-Claim 2.0, SatuSehat FHIR R4)</div>
-        <div>2. <strong class="text-purple-400">Dev & Data Engineering Suite</strong>: 29 interactive utilities (IPv4 CIDR, Firewall CLI, Outlier QC, Hashes)</div>
-        <div>3. <strong class="text-emerald-400">SHUNA AI Data Engine</strong>: NLP Sentiment Studio, Tabular Retention Predictor, Time-Series Anomaly Detector</div>
-        <div class="pt-1"><a href="#projects" class="text-emerald-400 underline hover:text-emerald-300">➔ Scroll ke kartu proyek</a></div>
-      </div>
-    `;
-  } else if (cmd === 'simrs') {
-    window.location.hash = '#simrs';
-    responseHtml = `<div class="text-emerald-400 pl-3 border-l-2 border-emerald-500/50">Navigating to SIMRS Core Enterprise...</div>`;
-  } else if (cmd === 'devtools' || cmd === 'tools') {
-    window.location.hash = '#devtools';
-    responseHtml = `<div class="text-emerald-400 pl-3 border-l-2 border-emerald-500/50">Navigating to Dev & Data Suite (29 Tools)...</div>`;
-  } else if (cmd === 'shuna' || cmd === 'shuna-ai' || cmd === 'ai' || cmd === 'nlp' || cmd === 'ml') {
-    window.location.hash = '#shuna-ai';
-    responseHtml = `<div class="text-emerald-400 pl-3 border-l-2 border-emerald-500/50">Navigating to SHUNA AI (NLP & ML Analytics Engine)...</div>`;
-  } else if (cmd === 'contact' || cmd === 'github') {
-    responseHtml = `
-      <div class="text-slate-300 pl-3 border-l-2 border-sky-500/50 text-[10px] sm:text-xs">
-        GitHub: <a href="https://github.com/InfiniteNull" target="_blank" class="text-sky-400 underline">github.com/InfiniteNull</a><br>
-        Location: Medan, Indonesia
-      </div>
-    `;
-  } else if (cmd === 'date') {
-    responseHtml = `<div class="text-slate-300 pl-3 border-l-2 border-slate-500">${new Date().toString()}</div>`;
-  } else {
-    responseHtml = `
-      <div class="text-rose-400 pl-3 border-l-2 border-rose-500/50 text-[10px] sm:text-xs">
-        command not found: <code>${rawCmd}</code>. Ketik <span class="text-white font-bold cursor-pointer underline" onclick="window.runTerminalCmd('help')">help</span> untuk melihat daftar perintah.
-      </div>
-    `;
-  }
-
-  const newEntry = document.createElement('div');
-  newEntry.className = 'space-y-1';
-  newEntry.innerHTML = `
-    <div><span class="text-emerald-400">guest@rizkiananda</span>:<span class="text-sky-400">~</span>$ <span class="text-white">${rawCmd}</span></div>
-    ${responseHtml}
-  `;
-
-  outputEl.appendChild(newEntry);
-  outputEl.scrollTop = outputEl.scrollHeight;
-};
-
-// ==========================================
-// MASTER URL HASH ROUTER
-// Routes: #home, #projects, #experience, #simrs, #devtools
-// ==========================================
-window.currentProject = 'home';
-
-window.handleRoute = function() {
-  const rawHash = (window.location.hash || '#home').toLowerCase();
-  const cleanHash = rawHash.split('?')[0];
-
-  const viewHome = document.getElementById('viewHome');
-  const viewSimrs = document.getElementById('viewSimrs');
-  const viewDevTools = document.getElementById('viewDevTools');
-  const viewShunaAi = document.getElementById('viewShunaAi');
-
-  if (cleanHash === '#simrs') {
-    window.currentProject = 'simrs';
-    if (viewHome) viewHome.classList.add('hidden');
-    if (viewDevTools) viewDevTools.classList.add('hidden');
-    if (viewShunaAi) viewShunaAi.classList.add('hidden');
-    if (viewSimrs) viewSimrs.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    const root = document.getElementById('simrsSuiteRoot');
-    if (root && typeof window.renderSimrsSuite === 'function') {
-      window.renderSimrsSuite(root);
-    }
-  } else if (cleanHash === '#devtools') {
-    window.currentProject = 'devtools';
-    if (viewHome) viewHome.classList.add('hidden');
-    if (viewSimrs) viewSimrs.classList.add('hidden');
-    if (viewShunaAi) viewShunaAi.classList.add('hidden');
-    if (viewDevTools) viewDevTools.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    renderToolsGrid();
-  } else if (cleanHash === '#shuna-ai' || cleanHash === '#shuna' || cleanHash === '#ai') {
-    window.currentProject = 'shuna-ai';
-    if (viewHome) viewHome.classList.add('hidden');
-    if (viewSimrs) viewSimrs.classList.add('hidden');
-    if (viewDevTools) viewDevTools.classList.add('hidden');
-    if (viewShunaAi) viewShunaAi.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    const root = document.getElementById('shunaAiRoot');
-    if (root && typeof window.renderShunaAiSuite === 'function') {
-      window.renderShunaAiSuite(root);
-    }
-  } else {
-    // Default: Home Landing Page
-    window.currentProject = 'home';
-    if (viewSimrs) viewSimrs.classList.add('hidden');
-    if (viewDevTools) viewDevTools.classList.add('hidden');
-    if (viewShunaAi) viewShunaAi.classList.add('hidden');
-    if (viewHome) viewHome.classList.remove('hidden');
-
-    if (cleanHash === '#projects') {
-      const el = document.getElementById('projects');
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 50);
-    } else if (cleanHash === '#experience') {
-      const el = document.getElementById('experience');
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 50);
-    } else if (cleanHash === '#certifications') {
-      const el = document.getElementById('certifications');
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 50);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-
-  if (window.lucide) {
-    lucide.createIcons();
-  }
-};
-
-window.addEventListener('hashchange', window.handleRoute);
-
-// Backward-compatible switchProject function
-window.switchProject = function(projectName) {
-  if (projectName === 'simrs') {
-    window.location.hash = '#simrs';
-  } else if (projectName === 'devtools') {
-    window.location.hash = '#devtools';
-  } else if (projectName === 'shuna' || projectName === 'shuna-ai' || projectName === 'ai') {
-    window.location.hash = '#shuna-ai';
-  } else {
-    window.location.hash = '#home';
-  }
-};
-
-// ==========================================
-// EVENT LISTENERS & INITIALIZATION
-// ==========================================
-function initApp() {
-  initTheme();
+// Language Switcher Logic
+window.setLanguage = function(lang) {
+  window.currentLang = lang;
+  localStorage.setItem('app_lang', lang);
   
+  const langLabel = document.getElementById('langLabel');
+  if (langLabel) langLabel.textContent = lang === 'id' ? 'ID ➔ EN' : 'EN ➔ ID';
+
+  const tabDemoLabel = document.getElementById('tabDemoLabel');
+  const tabCodeLabel = document.getElementById('tabCodeLabel');
+  const tabDocsLabel = document.getElementById('tabDocsLabel');
+  const copyBtnText = document.getElementById('copyBtnText');
+
+  if (tabDemoLabel) tabDemoLabel.textContent = lang === 'en' ? 'Interactive Live Demo' : 'Live Demo Interaktif';
+  if (tabCodeLabel) tabCodeLabel.textContent = lang === 'en' ? 'Original Source Code' : 'Source Code Asli';
+  if (tabDocsLabel) tabDocsLabel.textContent = lang === 'en' ? 'Architecture & Docs' : 'Arsitektur & Penjelasan';
+  if (copyBtnText) copyBtnText.textContent = lang === 'en' ? 'Copy Code' : 'Salin Kode';
+
+  renderToolsGrid();
+};
+
+// Initialize Everything
+function initDevTools() {
   // Apply saved language or default to ID
   const savedLang = localStorage.getItem('app_lang') || 'id';
-  if (typeof window.setLanguage === 'function') {
-    window.setLanguage(savedLang);
-  } else {
-    renderToolsGrid();
-  }
+  window.setLanguage(savedLang);
 
-  // Language Switcher Toggle Button
+  // Language Toggle Button
   const langToggleBtn = document.getElementById('langToggleBtn');
   if (langToggleBtn) {
     langToggleBtn.addEventListener('click', () => {
       const nextLang = window.currentLang === 'id' ? 'en' : 'id';
-      if (typeof window.setLanguage === 'function') {
-        window.setLanguage(nextLang);
-      }
+      window.setLanguage(nextLang);
     });
   }
 
-  // Search Input for DevTools
+  // Search Input
   const searchInput = document.getElementById('toolSearchInput');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -1425,7 +1111,7 @@ function initApp() {
     });
   }
 
-  // Category Filters for DevTools
+  // Category Filters
   const categoryFilterContainer = document.getElementById('categoryFilterContainer');
   if (categoryFilterContainer) {
     categoryFilterContainer.addEventListener('click', (e) => {
@@ -1434,11 +1120,11 @@ function initApp() {
 
       categoryFilterContainer.querySelectorAll('.category-filter-btn').forEach(b => {
         b.classList.remove('active');
-        b.classList.add('text-slate-600', 'dark:text-slate-400');
+        b.classList.add('text-slate-400');
       });
 
       btn.classList.add('active');
-      btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+      btn.classList.remove('text-slate-400');
       currentCategory = btn.dataset.category;
       renderToolsGrid();
     });
@@ -1454,7 +1140,7 @@ function initApp() {
     });
   }
 
-  // Modal Tabs
+  // Modal Tab Buttons
   const tabBtnDemo = document.getElementById('tabBtnDemo');
   const tabBtnCode = document.getElementById('tabBtnCode');
   const tabBtnDocs = document.getElementById('tabBtnDocs');
@@ -1464,56 +1150,24 @@ function initApp() {
 
   // Copy Code Button
   const copyCodeBtn = document.getElementById('copyCodeBtn');
-  if (copyCodeBtn) {
-    copyCodeBtn.addEventListener('click', () => {
-      const modalCodeSnippet = document.getElementById('modalCodeSnippet');
-      if (!modalCodeSnippet) return;
-      navigator.clipboard.writeText(modalCodeSnippet.textContent).then(() => {
-        showToast(window.currentLang === 'en' ? "Source code copied to clipboard!" : "Source code berhasil disalin ke clipboard!", "success");
-      }).catch(() => {
-        showToast("Gagal menyalin source code", "error");
-      });
-    });
-  }
+  if (copyCodeBtn) copyCodeBtn.addEventListener('click', window.copyModalCode);
 
-  // Developer Profile Modal
-        const viewInterviewDocBtn = document.getElementById('viewInterviewDocBtn');
-  const interviewModal = document.getElementById('interviewModal');
-
-    
-  // Technical Guide Modal
-  if (viewInterviewDocBtn) viewInterviewDocBtn.addEventListener('click', openInterviewGuide);
-  if (interviewModal) {
-    interviewModal.addEventListener('click', (e) => {
-      if (e.target === interviewModal) closeInterviewGuide();
-    });
-  }
-
-  // Theme Toggle
-  const themeToggleBtn = document.getElementById('themeToggleBtn');
-  if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
-
-  // Keyboard Shortcuts (Esc to close modals)
+  // Esc Key to Close Modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       const toolModal = document.getElementById('toolModal');
-            const interviewModal = document.getElementById('interviewModal');
       if (toolModal && !toolModal.classList.contains('hidden')) closeToolModal();
-            if (interviewModal && !interviewModal.classList.contains('hidden')) closeInterviewGuide();
     }
   });
 
-  // Execute Initial Route
-  window.handleRoute();
+  renderToolsGrid();
 
-  if (window.lucide) {
-    lucide.createIcons();
-  }
+  if (window.lucide) lucide.createIcons();
 }
 
-// Ensure startup on DOM ready or immediately if already loaded
+// Run on load
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
+  document.addEventListener('DOMContentLoaded', initDevTools);
 } else {
-  initApp();
+  initDevTools();
 }
