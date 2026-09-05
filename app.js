@@ -1101,23 +1101,72 @@ function toggleTheme() {
 }
 
 window.setLanguage = function(lang) {
+  if (lang !== 'id' && lang !== 'en') lang = 'id';
   window.currentLang = lang;
   localStorage.setItem('app_lang', lang);
+  const isEn = lang === 'en';
   
   const langLabel = document.getElementById('langLabel');
-  if (langLabel) langLabel.textContent = lang === 'id' ? 'ID ➔ EN' : 'EN ➔ ID';
+  if (langLabel) langLabel.textContent = isEn ? 'EN' : 'ID';
 
+  const heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) heroTitle.textContent = isEn ? "29 Interactive Computational Tools" : "29 Perkakas Komputasi Interaktif";
+
+  const heroDesc = document.getElementById('heroDesc');
+  if (heroDesc) heroDesc.textContent = isEn 
+    ? "Standalone platform for IPv4 networking, firewall hardening, data wrangling & QC, VAPT security auditing, and hardware sizing utilities."
+    : "Platform utilitas mandiri untuk manajemen jaringan IPv4, hardening firewall, manipulasi & QC data, audit keamanan VAPT, serta utilitas hardware.";
+
+  const searchInput = document.getElementById('toolSearchInput');
+  if (searchInput) searchInput.placeholder = isEn ? "Search tools, tech stack, or keywords..." : "Cari nama tool / teknologi...";
+
+  // Categories
+  const catContainer = document.getElementById('categoryFilterContainer');
+  if (catContainer) {
+    const btnAll = catContainer.querySelector('[data-category="all"]');
+    const btnNet = catContainer.querySelector('[data-category="network"]');
+    const btnSec = catContainer.querySelector('[data-category="security"]');
+    const btnDb = catContainer.querySelector('[data-category="database"]');
+    const btnUtil = catContainer.querySelector('[data-category="utility"]');
+
+    if (btnAll) btnAll.textContent = isEn ? "All Tools (29)" : "Semua Tools (29)";
+    if (btnNet) btnNet.textContent = isEn ? "Networking & Server" : "Jaringan & Server";
+    if (btnSec) btnSec.textContent = isEn ? "System Security" : "Keamanan Sistem";
+    if (btnDb) btnDb.textContent = isEn ? "Data & Backend" : "Data & Backend";
+    if (btnUtil) btnUtil.textContent = isEn ? "Utilities & Hardware" : "Utilitas & Hardware";
+  }
+
+  // Empty State
+  const emptyState = document.getElementById('emptyState');
+  if (emptyState) {
+    const h3 = emptyState.querySelector('h3');
+    const p = emptyState.querySelector('p');
+    if (h3) h3.textContent = isEn ? "No tools found" : "Tidak ada tool yang cocok";
+    if (p) p.textContent = isEn ? "Try another search keyword or switch category filters." : "Coba gunakan kata kunci pencarian lain atau ubah filter kategori.";
+  }
+
+  // Modal Labels
   const tabDemoLabel = document.getElementById('tabDemoLabel');
   const tabCodeLabel = document.getElementById('tabCodeLabel');
   const tabDocsLabel = document.getElementById('tabDocsLabel');
   const copyBtnText = document.getElementById('copyBtnText');
 
-  if (tabDemoLabel) tabDemoLabel.textContent = lang === 'en' ? 'Interactive Live Demo' : 'Live Demo Interaktif';
-  if (tabCodeLabel) tabCodeLabel.textContent = lang === 'en' ? 'Original Source Code' : 'Source Code Asli';
-  if (tabDocsLabel) tabDocsLabel.textContent = lang === 'en' ? 'Architecture & Docs' : 'Arsitektur & Penjelasan';
-  if (copyBtnText) copyBtnText.textContent = lang === 'en' ? 'Copy Code' : 'Salin Kode';
+  if (tabDemoLabel) tabDemoLabel.textContent = isEn ? 'Interactive Live Demo' : 'Live Demo Interaktif';
+  if (tabCodeLabel) tabCodeLabel.textContent = isEn ? 'Original Source Code' : 'Source Code Asli';
+  if (tabDocsLabel) tabDocsLabel.textContent = isEn ? 'Architecture & Technical Docs' : 'Arsitektur & Penjelasan';
+  if (copyBtnText) copyBtnText.textContent = isEn ? 'Copy Code' : 'Salin Kode';
 
   renderToolsGrid();
+
+  // If a modal is open, re-render its active language content
+  if (activeTool) {
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDocsBody = document.getElementById('modalDocsBody');
+    const title = (isEn && activeTool.title_en) ? activeTool.title_en : activeTool.title;
+    const docs = (isEn && activeTool.docs_en) ? activeTool.docs_en : activeTool.docs;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalDocsBody) modalDocsBody.innerHTML = docs || (isEn ? "Detailed technical documentation available in repository README.md." : "Dokumentasi teknis lengkap tersedia pada file README.md repository.");
+  }
 };
 
 // Initialize Everything
