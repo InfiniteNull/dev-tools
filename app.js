@@ -877,35 +877,35 @@ window.renderToolsGrid = function() {
     const openLabel = lang === 'en' ? 'Open Workspace' : 'Buka Workspace';
 
     const card = document.createElement('div');
-    card.className = "tool-card bg-slate-900 hover:bg-slate-850 rounded-xl border border-slate-800 hover:border-slate-700 p-5 flex flex-col justify-between cursor-pointer group transition duration-200 shadow-sm";
+    card.className = "tool-card bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-slate-700 p-5 flex flex-col justify-between cursor-pointer group transition duration-200 shadow-sm";
     card.dataset.toolId = tool.id;
 
     card.innerHTML = `
       <div class="space-y-3.5">
         <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700/60">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
             <i data-lucide="${tool.icon}" class="w-4 h-4"></i>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-medium border bg-slate-800/80 text-slate-300 border-slate-700">
+          <span class="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-medium border bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
             ${tool.techBadge}
           </span>
         </div>
 
         <div>
-          <h3 class="font-bold text-white text-sm sm:text-base group-hover:text-purple-400 transition-colors">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
             ${title}
           </h3>
-          <p class="mt-1.5 text-xs text-slate-400 leading-relaxed line-clamp-2">
+          <p class="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
             ${desc}
           </p>
         </div>
       </div>
 
-      <div class="pt-3.5 mt-4 border-t border-slate-800 flex items-center justify-between text-xs">
-        <span class="text-[11px] font-mono font-medium text-slate-400 group-hover:text-white flex items-center gap-1.5 transition-colors">
+      <div class="pt-3.5 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white flex items-center gap-1.5 transition-colors">
           ${openLabel} <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
         </span>
-        <span class="text-[10px] font-mono text-purple-400 uppercase tracking-wider">LIVE DEMO</span>
+        <span class="text-[10px] font-mono text-purple-600 dark:text-purple-400 font-semibold uppercase tracking-wider">LIVE DEMO</span>
       </div>
     `;
 
@@ -1067,6 +1067,39 @@ window.copyModalCode = function() {
 };
 
 // Language Switcher Logic
+// Theme Switcher
+function initTheme() {
+  const themeIconSun = document.getElementById('themeIconSun');
+  const themeIconMoon = document.getElementById('themeIconMoon');
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.documentElement.classList.add('dark');
+    if (themeIconSun) themeIconSun.classList.remove('hidden');
+    if (themeIconMoon) themeIconMoon.classList.add('hidden');
+  } else {
+    document.documentElement.classList.remove('dark');
+    if (themeIconSun) themeIconSun.classList.add('hidden');
+    if (themeIconMoon) themeIconMoon.classList.remove('hidden');
+  }
+}
+
+function toggleTheme() {
+  const themeIconSun = document.getElementById('themeIconSun');
+  const themeIconMoon = document.getElementById('themeIconMoon');
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+  if (isDark) {
+    if (themeIconSun) themeIconSun.classList.remove('hidden');
+    if (themeIconMoon) themeIconMoon.classList.add('hidden');
+  } else {
+    if (themeIconSun) themeIconSun.classList.add('hidden');
+    if (themeIconMoon) themeIconMoon.classList.remove('hidden');
+  }
+}
+
 window.setLanguage = function(lang) {
   window.currentLang = lang;
   localStorage.setItem('app_lang', lang);
@@ -1089,9 +1122,17 @@ window.setLanguage = function(lang) {
 
 // Initialize Everything
 function initDevTools() {
+  initTheme();
+
   // Apply saved language or default to ID
   const savedLang = localStorage.getItem('app_lang') || 'id';
   window.setLanguage(savedLang);
+
+  // Theme Toggle Button
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
 
   // Language Toggle Button
   const langToggleBtn = document.getElementById('langToggleBtn');
